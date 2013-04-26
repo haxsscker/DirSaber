@@ -1,0 +1,20 @@
+/
+├── __init__.py
+├── lib                         通用自写函数 
+│   ├── do_HTTP_request.py      发送请求功能                 
+│ 	├── ThreadGetKey.py         中断扫描功能
+│   └── __init__.py
+│
+├── modules                     自写组建、模块
+│   ├── proxy.py                代理模块
+│   ├── scaner.py               扫描模块
+│   ├── whatweb.py              网站程序发现模块（待定）
+│   └── __init__.py
+│
+├── dic                         字典文件夹
+│   ├── admins
+│ 	├── backs
+│   ├── shells
+│   └── others 
+├── output                      输出结果（可选输出）
+└── main.py                     主程序
