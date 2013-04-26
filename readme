@@ -13,7 +13,7 @@
 │
 ├── dic                         字典文件夹
 │   ├── admins
-│ 	├── backs
+│   ├── backs
 │   ├── shells
 │   └── others 
 ├── output                      输出结果（可选输出）
