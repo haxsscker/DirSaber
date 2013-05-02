@@ -3,11 +3,14 @@
 ├── lib                         通用自写函数 
 │   ├── do_HTTP_request.py      发送请求功能                 
 │   ├── ThreadGetKey.py         手动中断功能
+│   ├── logging.py              日志记录功能
 │   └── __init__.py
 │
 ├── modules                     自写组建、模块
 │   ├── proxy.py                代理模块
-│   ├── scaner.py               扫描模块
+│   ├── chooseDic.py            字典选择模块
+│   ├── urlcheck.py             url确认模块
+│   ├── f4ckDir.py              扫描模块
 │   ├── whatweb.py              网站程序发现模块（待定）
 │   └── __init__.py
 │
