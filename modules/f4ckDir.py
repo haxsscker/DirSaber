@@ -1,30 +1,42 @@
-class f4ckDir:
-	with open(wordlist) as comfile:
-		for line in comfile:
-			line = line.strip("\r\n")
-			req = u2.Request(sys.argv[1] + "/" + line)
+#!/usr/bin/env python2
+#-*-encoding:utf-8-*-
+from modules.Saber_col import printError, printWait, printResult
+from lib.logging import logging
+import urllib2
+
+def f4ckDir(site,sdir,smode):
+	try:
+		filename = site.replace ("http://","").replace ("/","")
+		ldir = "/".join(sdir.split("/")[0:-2])
+		logging_file=logging(ldir+"/log/"+filename+".txt")
+
+	except Exception,e:
+		print e
+		pass
+
+	with open(sdir) as dirfile:
+		for line in dirfile:
+			line = line.strip("\r").strip("\n")
+			req = urllib2.Request(site + "/" + line)
 			try:
-				u2.urlopen(req)
-			except u2.HTTPError as hr:
+				urllib2.urlopen(req,timeout=5)
+			except urllib2.HTTPError as hr:
 				if hr.code == 404:
-					print mode+": " + line.ljust(50,' ') + "[Not found]"
-			except u2.URLError as ur:
-				print "URL error:", ur.args
+					print smode+": " + line.ljust(50,' ') + "[Not found]"
+			except urllib2.URLError as ur:
+				printError("URL error:", ur.args)
 				exit()
 			except ValueError as vr:
-				print "Value error:", vr.args
+				pprintError("Value error:", vr.args)
 				exit()
 			except:
-				print "Unknown exception: exit..."
+				printWait("Unknown exception: exit...")
 				exit()
 			else:
-				print mode+": " + line.ljust(50,' ') + "[OK]"
-				if logging_support !=0:
-				   logging_session.writelog(mode+": " + line.ljust(50,' ') + "[OK]\n")
-				else:
-					pass
-			try:
-				pass
-			except KeyboardInterrupt as kierr:
-				print "\nInterrupted by user: (CTRL+C or Delete)"
-				exit()
+				printResult(smode+": " + line.ljust(50,' ') + "[OK]")
+				if logging.writelog !=0:
+				   logging_file.writelog(smode+": " + line.ljust(50,' ') + "[OK]\n")
+	try:
+		logging_file.close()
+	except:
+		pass

@@ -1,12 +1,21 @@
 #!/usr/bin/env python2
 #-*-encoding:utf-8-*-
+import urllib2
+from modules.Saber_col import printResult,printProcess,printError
 
-def urlcheck(url):
+def urlcheck(site):
+	if site[:4] != "http":
+		site = "http://"+site
+	if site.endswith("--"):
+  		site = site.rstrip('--')
+	if site.endswith("/*"):
+  		site = site.rstrip('/*')
 	try:
-	       	print ("[!] Checking website " + _url + "...")
-	       	req = u2.Request(_url)
-	       	u2.urlopen(req)
-	       	print "[!] " +_url+" appears to be Online.\n"
-   	except:
-	        print("[-] Server offline or invalid URL")
-	        sys.exit()
+		printProcess("[!] Checking website " + site + "...")
+		req = urllib2.Request(site)
+		urllib2.urlopen(site)
+		printResult("[+] " + site +" appears to be Online.\n")
+	except:
+		printError("[-] Server offline or invalid URL")
+		return None
+	return site

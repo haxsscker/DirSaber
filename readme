@@ -11,6 +11,7 @@
 │   ├── chooseDic.py            字典选择模块
 │   ├── urlcheck.py             url确认模块
 │   ├── f4ckDir.py              扫描模块
+│   ├── loading.py              进度显示模块
 │   ├── whatweb.py              网站程序发现模块（待定）
 │   └── __init__.py
 │

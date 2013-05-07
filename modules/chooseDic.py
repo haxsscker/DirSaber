@@ -1,22 +1,27 @@
 #!/usr/bin/env python2
 #-*-encoding:utf-8-*-
+from modules.Saber_col import printError
+import os,sys
 
 def chooseDic(smode):
-	if mode == "shell":
-		wordlist=shellwordlist
-	elif mode == "backup":
-		wordlist=backupwordlist
-	elif mode == "admin":
-		wordlist=adminwordlist
-	elif mode == "dir": 
-		wordlist=dirwordlist 
-	elif mode == "files": 
-		wordlist=fileswordlist 	
+	path = sys.path[0]
+	path = path.replace("\\","/")
+	if smode == "shell":
+		wordlist=path+"/dic/shell.txt"
+	elif smode == "backup":
+		wordlist=path+"/dic/backups.txt"
+	elif smode == "admin":
+		wordlist=path+"/dic/admins.txt"
+	elif smode == "dir": 
+		wordlist=path+"/dic/dir.txt"
+	elif smode == "files": 
+		wordlist=path+"/dic/files.txt"
+	elif smode == "all": 
+		wordlist=path+"/dir/"
 	else:
-		print("[x] Mode not specified")
-		exit()
-
-	if not os.access(wordlist, os.F_OK):
-	print(  "[x] File " + wordlist + " does not exist or "
-		+ "you are not permitted to access to the file")
-	exit()
+		printError("[-] Mode not specified")
+		os._exit(1)
+	if smode != "all" and not os.access(wordlist, os.F_OK):
+		printError ("[-] File " + wordlist + " does not exist or " + "you are not permitted to access to the file" )
+		os._exit(1)
+	return wordlist
