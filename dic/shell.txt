@@ -29,7 +29,8 @@ joomla.php
 Sym.php
 cp.php
 sql.php
-h4xor.phpL3b.php
+h4xor.php
+L3b.php
 d.php
 a.php
 b.php

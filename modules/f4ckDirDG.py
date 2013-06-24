@@ -2,12 +2,12 @@
 #-*-encoding:utf-8-*-
 from modules.Saber_col import printError, printWait, printResult
 from lib.logging import logging
-import urllib2,sys,threading,Queue,time
+import urllib2,sys,threading,collections,time
 from lib.proxy import proxycheck,myproxy
 from lib.ThreadGetKey import ThreadGetKey
-import os
+import os,copy
 
-def f4ckDir(site,sdir,smode,sproxy = None, sscript = None):
+def f4ckDirDG(site,sdir,smode,sproxy = None, sscript = None):
     if sproxy:
         connet_proxy = myproxy(sproxy)
         if not connet_proxy:
@@ -22,8 +22,13 @@ def f4ckDir(site,sdir,smode,sproxy = None, sscript = None):
         print e
         pass
 
+    global dpath
+    dpath = []
     global queue
-    queue = Queue.Queue()
+    global queueD
+    firstRun = 1
+    queue = collections.deque()
+    queueD = collections.deque()
     threads = []
 
     if sdir.split('.')[-1] != "txt":
@@ -34,17 +39,18 @@ def f4ckDir(site,sdir,smode,sproxy = None, sscript = None):
                     for line in dirfile:
                         line = line.strip("\r").strip("\n")
                         if sscript and line.find(".") and line.split(".")[-1] == sscript:
-                            queue.put(line) 
+                            queue.append(line) 
                         elif not sscript:
-                            queue.put(line)
+                            queue.append(line)
     else:
         with open(sdir) as dirfile:
             for line in dirfile:
                 line = line.strip("\r").strip("\n")
                 if sscript and line.find(".") and line.split(".")[-1] == sscript:
-                    queue.put(line) 
+                    queue.append(line) 
                 elif not sscript:
-                    queue.put(line)
+                    queue.append(line)
+    queueD = copy.deepcopy(queue)
     ######################################################
     #shouhu_pro & jindu_pro
     shouhu = ThreadGetKey()
@@ -57,12 +63,22 @@ def f4ckDir(site,sdir,smode,sproxy = None, sscript = None):
 
     #########################################################
     #lines start!
-    for i in range(10):
-        a = finder(site,smode,logging_file)
-        a.start()
-        threads.append(a)
-    for j in threads:
-        j.join()
+    while(dpath != [] or firstRun == 1):
+        firstRun = 0
+        Npath = None
+        queue = copy.deepcopy(queueD)
+        if dpath:
+            Npath = dpath[0].strip("/")
+            dpath = dpath.remove(dpath[0])
+            if dpath == None:
+                dpath = []
+        for i in range(3):
+            a = finderDG(site,smode,logging_file,Npath)
+            a.start()
+            threads.append(a)
+        for j in threads:
+            j.join()
+        time.sleep(2)
             
     printWait(smode+"------->" + "task".ljust(48,' ') + "[ALL DONE]")
     try:
@@ -70,24 +86,33 @@ def f4ckDir(site,sdir,smode,sproxy = None, sscript = None):
     except:
         pass
 
-class finder(threading.Thread):
-    def __init__(self,site,smode,logging_file):
+class finderDG(threading.Thread):
+    def __init__(self,site,smode,logging_file,Npath = None):
         threading.Thread.__init__(self)
         self.site = site
         self.smode = smode
         self.logging_file = logging_file
+        self.Npath = Npath
 
     def run(self):
         while 1:
-            if queue.empty()== True:
+            try:
+                self.line = str(queue.popleft())
+            except:
                 break
-            self.line = str(queue.get())
-            self.req = urllib2.Request(self.site + "/" + self.line)
+            if self.Npath:
+                self.Npath = self.Npath
+                self.req = urllib2.Request(self.site + "/" + self.Npath + "/" + self.line)
+            else:
+                self.req = urllib2.Request(self.site + "/" + self.line)
             try:
                 urllib2.urlopen(self.req,timeout=10)
             except urllib2.HTTPError as self.hr:
                 if self.hr.code == 404:
-                    print self.smode+": " + self.line.ljust(70,' '),
+                    if self.Npath:
+                        print self.smode+": " + self.Npath + "/" + self.line.ljust(70-len(self.Npath)-1,' '),
+                    else:
+                        print self.smode+": " + self.line.ljust(70,' '),
                     sys.stdout.write("\r")
             except urllib2.URLError as self.ur:
                 printError("URL error:" + self.line.ljust(50,' ') + str(self.ur.args[0]).ljust(20,' '))
@@ -99,24 +124,16 @@ class finder(threading.Thread):
                 printWait("Unknown exception: exit...")
                 exit()
             else:
-                printResult(self.smode+": " + self.line.ljust(56,' ') + "[OK]".ljust(30,' '))
+                if len(self.line.split(".")) == 1:
+                    if self.Npath:
+                        dpath.append ( self.Npath + "/" + self.line.strip("/") )
+                        printResult(self.smode+": " + self.Npath + "/" + self.line.ljust(56-len(self.Npath)-1,' ') + "[OK]".ljust(30,' '))
+                    else:
+                        dpath.append ( self.line )
+                        printResult(self.smode+": " + self.line.ljust(56,' ') + "[OK]".ljust(30,' '))
+                else:
+                    printResult(self.smode+": " + self.line.ljust(56,' ') + "[OK]".ljust(30,' '))
                 try:
                 	self.logging_file.writelog(self.smode+": " + self.line.ljust(50,' ') + "[OK]\n")
                 except:
                 	pass
-
-# class Loading(threading.Thread):
-#     def __init__(self,maxloading):
-#         self.maxloading = maxloading
-#         print self.maxloading
-#         threading.Thread.__init__(self)
-#         self.percent = 0
-#     def run(self):
-#         while queue.qsize()>0 and self.percent < 100:
-#             self.percent = 100 * (self.maxloading - queue.qsize()) / self.maxloading
-#             if self.percent > 100:
-#                 self.percent = 100
-#             print ''.ljust(60,' ')+ str(self.percent) + '%',
-#             sys.stdout.write("\r")
-#             time.sleep(2)
-#         return

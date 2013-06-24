@@ -13,7 +13,7 @@ def urlcheck(site):
 	try:
 		printProcess("[!] Checking website " + site + "...")
 		req = urllib2.Request(site)
-		urllib2.urlopen(site)
+		urllib2.urlopen(site,timeout = 10)
 		printResult("[+] " + site +" appears to be Online.\n")
 	except:
 		printError("[-] Server offline or invalid URL")

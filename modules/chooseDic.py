@@ -17,10 +17,10 @@ def chooseDic(smode):
 	elif smode == "files": 
 		wordlist=path+"/dic/files.txt"
 	elif smode == "all": 
-		wordlist=path+"/dir/"
+		wordlist=path+"/dic/"
 	else:
-		printError("[-] Mode not specified")
-		os._exit(1)
+		printError("[-]warning!!!: Mode not specified")
+		wordlist=path+"/dic/"+smode+".txt"
 	if smode != "all" and not os.access(wordlist, os.F_OK):
 		printError ("[-] File " + wordlist + " does not exist or " + "you are not permitted to access to the file" )
 		os._exit(1)

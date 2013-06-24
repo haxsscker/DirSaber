@@ -6,6 +6,8 @@
 │   ├── logging.py              日志记录功能
 │   └── __init__.py
 │
+├── log                         运行日志
+│
 ├── modules                     自写组建、模块
 │   ├── proxy.py                代理模块
 │   ├── chooseDic.py            字典选择模块

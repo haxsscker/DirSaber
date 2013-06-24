@@ -1,3 +1,2 @@
 -----------------f4ckDir logs-------------------- 
 shell: /my                                               [OK]
-shell: a.php                                             [OK]
