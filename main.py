@@ -1,12 +1,7 @@
 #!/usr/bin/env python2
 #-*-encoding:utf-8-*-
-#-------------------------------------------#
-#	-shell:It looks for Webshells
-#	-backup:It looks for Backup
-#	-admin:It looks for Adminpages
-#	-dir:It looks for Sensitive Directories
-#	-all:It looks for All Above
-#-------------------------------------------#
+#Thanks for lazze
+
 from modules.Saber_col import printError,printWait
 printWait( '''
     #######################################################
