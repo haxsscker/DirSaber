@@ -18,7 +18,7 @@
 │   ├── whatweb.py              网站程序发现模块（待定）
 │   └── __init__.py
 │
-├── dic                         字典文件夹
+├── dic                         字典文件夹（）
 │   ├── admins
 │   ├── backs
 │   ├── shells
